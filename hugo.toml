@@ -1,0 +1,52 @@
+baseURL = "https://wojciech-wais.github.io/ml-blog/"
+languageCode = "en-us"
+title = "ML Engineering Notes"
+theme = "PaperMod"
+paginate = 10
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+
+[params]
+  author = "Wojciech Wais"
+  description = "Raw notes from an embedded/ML engineer digging into inference engines, model quantization, and GPU internals."
+  defaultTheme = "dark"
+  ShowReadingTime = true
+  ShowShareButtons = false
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowToc = true
+  TocOpen = false
+  ShowWordCount = false
+  comments = false
+  hidemeta = false
+  disableThemeToggle = false
+
+  [params.homeInfoParams]
+    Title = "ML Engineering Notes"
+    Content = "Raw notes from debugging inference engines, profiling GPU kernels, and reading model internals. By [@wojciech-wais](https://github.com/wojciech-wais)."
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/wojciech-wais"
+
+  [[params.socialIcons]]
+    name = "linkedin"
+    url = "https://www.linkedin.com/in/wojciech-wais-6183b797/"
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.highlight]
+    style = "monokai"
+    lineNos = false
+    codeFences = true
+    guessSyntax = true

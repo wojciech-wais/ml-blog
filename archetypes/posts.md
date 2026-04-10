@@ -3,20 +3,19 @@ title: "{{ replace .Name "-" " " | title }}"
 date: {{ .Date }}
 draft: true
 tags: []
-categories: []
+categories: ["ml-engineering"]
 description: ""
-author: ""
+author: "Wojciech Wais"
+ShowToc: true
+TocOpen: false
 cover:
   image: ""
   alt: ""
   caption: ""
+  relative: true
 ---
 
 ## Motivation
-
-<!--
-What triggered this investigation? Trending paper, weird behavior, profiling result?
--->
 
 ## First attempt
 
