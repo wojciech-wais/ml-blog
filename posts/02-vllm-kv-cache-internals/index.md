@@ -4,7 +4,7 @@ date: 2026-04-10
 draft: false
 tags: ["vllm", "kv-cache", "inference", "paged-attention", "llm"]
 categories: ["ml-engineering"]
-description: "A corrected deep-dive into vLLM's KV cache manager — separating the scheduler from the allocator, fixing the prefix-caching story, and drawing everything out with Excalidraw diagrams."
+description: "One another deep-dive into vLLM's KV cache manager — separating the scheduler from the allocator, fixing the prefix-caching story, and some diagrams."
 author: "Wojciech Wais"
 cover:
   image: "https://user-gen-media-assets.s3.amazonaws.com/seedream_images/ec254146-5ff3-4230-b50d-ecd78c296d2d.png"
