@@ -34,8 +34,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive
           fetch-depth: 0
+
+      - name: Clone PaperMod theme
+        run: |
+          git clone --depth=1 https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod
 
       - name: Setup GitHub Pages
         id: pages
