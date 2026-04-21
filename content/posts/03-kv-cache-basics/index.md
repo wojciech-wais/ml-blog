@@ -66,6 +66,9 @@ The per-step KV computation drops from O(L) to O(1). But — and this is a point
 
 So what does caching actually buy you? On a 1024-token sequence, instead of computing 1024 K/V projections at every decode step, you compute exactly 1 per step and reuse the rest. The compute savings are real and significant. The attention cost stays the same either way.
 
+![KV Cache schematic — Q/K/V roles, decoding without cache, decoding with cache](kvcache.jpeg)
+*Left: Q, K, and V are three projections of token embeddings — Q asks a question, K provides a matchable label, V carries the payload. Middle: without caching, you recompute K and V for every token at every step. Right: with caching, past K/V entries live in a buffer and each new step adds exactly one entry.*
+
 ---
 
 ## The Memory Cost
