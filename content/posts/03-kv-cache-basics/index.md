@@ -89,7 +89,7 @@ A single 4096-token sequence occupies **~2 GiB** of KV cache.
 
 One important caveat: this assumes vanilla multi-head attention (MHA) where every head has its own K and V. Many newer models use **Grouped Query Attention (GQA)** — Mistral-7B uses 8 KV heads instead of 32, and LLaMA-3 uses 8 as well. GQA cuts the KV cache footprint proportionally (by 4x in these cases). But even with GQA, the memory pressure is substantial at long context lengths.
 
-For a model like LLaMA-2-13B in FP16 — 40 layers, 40 heads, full MHA — the per-token footprint is closer to 0.78 MiB (I worked through this in [post 1](/posts/01-vllm-kv-cache-manager/)). A 4096-token sequence eats ~3.1 GiB.
+For a model like LLaMA-2-13B in FP16 — 40 layers, 40 heads, full MHA — the per-token footprint is closer to 0.78 MiB (I worked through this in [post 1](/ml-blog/posts/01-vllm-kv-cache-manager/)). A 4096-token sequence eats ~3.1 GiB.
 
 On a 40 GB A100 with ~26 GB reserved for model weights, you have roughly 12–14 GB left for KV cache. That's enough for only a handful of concurrent long-context sequences before you're memory-bound — not compute-bound. **Memory capacity, not FLOPS, is the concurrency ceiling for LLM inference.** This is the root cause of everything the KV cache manager exists to solve.
 
@@ -113,9 +113,9 @@ The trade is explicit: you're exchanging compute redundancy for memory pressure.
 
 Now the next-level problems make more sense:
 
-- **Why block-based allocation?** Because you can't know sequence length upfront, pre-allocating a contiguous max-length slab wastes memory. Paged allocation (PagedAttention) divides the KV buffer into fixed blocks and allocates on demand. I covered this in [post 1](/posts/01-vllm-kv-cache-manager/).
+- **Why block-based allocation?** Because you can't know sequence length upfront, pre-allocating a contiguous max-length slab wastes memory. Paged allocation (PagedAttention) divides the KV buffer into fixed blocks and allocates on demand. I covered this in [post 1](/ml-blog/posts/01-vllm-kv-cache-manager/).
 
-- **Why prefix caching?** If multiple requests share the same system prompt, their K/V tensors for those prefix tokens are identical. Cache them once and skip the prefill cost for every subsequent request. Covered in detail in [post 2](/posts/02-vllm-kv-cache-internals/).
+- **Why prefix caching?** If multiple requests share the same system prompt, their K/V tensors for those prefix tokens are identical. Cache them once and skip the prefill cost for every subsequent request. Covered in detail in [post 2](/ml-blog/posts/02-vllm-kv-cache-internals/).
 
 - **Why quantize the KV cache?** At 0.5–0.78 MiB per token (less with GQA, but still significant), even modest context lengths are expensive. INT8 or FP8 KV quantization cuts that footprint in half or more, trading a small accuracy delta for a significant increase in concurrent sequence capacity. That's a topic for a future post.
 
@@ -125,6 +125,6 @@ Now the next-level problems make more sense:
 
 ## What I Skipped
 
-I deliberately left out multi-query attention (MQA) vs. GQA vs. MHA trade-offs in detail — that's its own post. I also didn't cover how prefill and decode phases interact with the cache differently (prefill fills the cache in one shot, decode extends it token by token), because I covered that in [post 2](/posts/02-vllm-kv-cache-internals/). And I haven't touched KV cache compression techniques beyond mentioning quantization — there's a growing literature on token eviction, attention sinks, and sliding window approaches that deserves a proper treatment.
+I deliberately left out multi-query attention (MQA) vs. GQA vs. MHA trade-offs in detail — that's its own post. I also didn't cover how prefill and decode phases interact with the cache differently (prefill fills the cache in one shot, decode extends it token by token), because I covered that in [post 2](/ml-blog/posts/02-vllm-kv-cache-internals/). And I haven't touched KV cache compression techniques beyond mentioning quantization — there's a growing literature on token eviction, attention sinks, and sliding window approaches that deserves a proper treatment.
 
 The point of this post was narrower: if you're going to reason about inference engine internals, you need to know what's actually being cached and why. Everything else builds on that.
